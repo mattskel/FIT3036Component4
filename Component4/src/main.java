@@ -6,10 +6,12 @@ public class main {
 		System.out.println("HERE");
 		
 		UCGWriter writer = new UCGWriter();
-		String myString = "The:B-O Mug:I-O on:B-P the:B-L table:I-L near:B-P the:B-L lamp:I-L";
+		String myString = "The:B-O Mug:I-O on:B-P the:B-S edge:I-S of:I-S the:B-L table:I-L near:B-P the:B-L lamp:I-L";
 		writer.SortTaggedUtterance(myString);
 		writer.InitialiseDocument();
 		writer.GenerateNodes();
+		writer.GenerateArcs();
+//		writer.BuildXML(0);
 		
 		SynonymCombination synonymComb = new SynonymCombination();
 		
@@ -26,10 +28,11 @@ public class main {
 		
 		List<List<String>> combinationList = synonymComb.GetCombinations();
 		System.out.println(combinationList);
-		
+		/*
 		UCGReader reader = new UCGReader();
 		reader.RetriveUCG("UCG_0.xml");
 		reader.GetNodeFeatures();
+		*/
 		
 	}
 }
