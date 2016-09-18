@@ -21,45 +21,59 @@ public class ConceptCombination {
 	
 	// A list of possible concepts for each of the synonyms
 	// From this list we will generate all possible combinations
-	List<List<Concept>> possibleConceptList = new ArrayList<List<Concept>>();
+	List<List<Concept>> possibleConceptList;
 	
 	// An output list containing the different combinations of concepts
 	List<List<Concept>> conceptCombinationList = new ArrayList<List<Concept>>();
+	
+	boolean allFound;	// Bool to determine if a concept was found for a synonym
 	
 	int numNodes;
 	
 	public ConceptCombination() {}
 	
 	// Get the synonym combination
-	public void GetSynonymCombination(List<String> synonymListIn) {
+	public void SetSynonymCombination(List<String> synonymListIn) {
 		synonymList = synonymListIn;
 	}
 	
 	// Get the concepts from the KB
-	public void AddConceptList(List<Concept> conceptListIn) {
+	public void SetConceptList(List<Concept> conceptListIn) {
 		conceptList = conceptListIn;
 	}
 	
 	// For each node/synonym generate a list of possible Concepts from the KB
 	public void GeneratePotentialConcepts() {
+		allFound = true;	// Use this to check that a concept exists matching the synonym
+		possibleConceptList = new ArrayList<List<Concept>>();
 		for (String synonym : synonymList) {
-			// Store concepts that match the synonym
-			List<Concept> tmpConceptList = new ArrayList<Concept>();
+			List<Concept> tmpConceptList = new ArrayList<Concept>();	// Store concepts that match the synonym
 			// Iterate over all concepts in the KB
 			for (Concept concept : conceptList) {
 				if (synonym.equalsIgnoreCase(concept.GetName())) {
 					tmpConceptList.add(concept);
 				}
 			}
+			// Check at least concept was found for a synonym
+			if (tmpConceptList.size() == 0) {
+				allFound = false;
+			}
 			possibleConceptList.add(tmpConceptList);
 		}
 	}
 	
 	public List<List<Concept>> GetCombinations() {
-		numNodes = synonymList.size();
-		List<Concept> initList = new ArrayList<Concept>();
-		CombinationGenerator(initList, 0);
 		return conceptCombinationList;
+	}
+	
+	public void GenerateCombinations(List<String> synonymListIn) {
+		SetSynonymCombination(synonymListIn);
+		GeneratePotentialConcepts();
+		if (allFound) {
+			numNodes = synonymList.size();
+			List<Concept> initList = new ArrayList<Concept>();
+			CombinationGenerator(initList, 0);
+		}
 	}
 	
 	// Generates all the possible concept combinations for the given synonyms

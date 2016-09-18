@@ -263,11 +263,11 @@ public class UCGWriter {
 			}
 		}
 		*/
-		System.out.println(fileNumber);
+//		System.out.println(fileNumber);
 		StreamResult result = new StreamResult(new File("UCG/UCG_" + fileNumber + ".xml"));
 		
 		try {
-			System.out.println("HERE");
+//			System.out.println("HERE");
 			transformer.transform(new DOMSource(document), result);
 		} catch (TransformerException e) {
 			// TODO Auto-generated catch block

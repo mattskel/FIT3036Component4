@@ -34,7 +34,7 @@ public class UCGReader {
 		}
 	}
 	
-	// Returns the features of all the nodes in the UCG
+	// Returns the features of all the concept nodes in the UCG
 	public List<List<String>> GetNodeFeatures() {
 		
 		List<List<String>> featuresList = new ArrayList<List<String>>();
@@ -44,7 +44,7 @@ public class UCGReader {
 			Element node = (Element) nList.item(i);
 			
 			NodeList conceptList = node.getElementsByTagName("concept");
-			Element concept = (Element) conceptList.item(0);
+			Element concept = (Element) conceptList.item(0);	// We know there is only one concept
 			NodeList featureList = concept.getElementsByTagName("feature");
 			
 			List<String> tmpFeaturesList = new ArrayList<String>();
@@ -56,6 +56,26 @@ public class UCGReader {
 			featuresList.add(tmpFeaturesList);
 		}
 		
+		return featuresList;
+	}
+	
+	// Returns the features of all the arc nodes
+	public List<List<String>> GetArcFeatures() {
+		List<List<String>> featuresList = new ArrayList<List<String>>();
+		NodeList nList = document.getElementsByTagName("arc");
+		for (int i = 0; i < nList.getLength(); i++) {
+			Element arc = (Element) nList.item(i);
+			NodeList conceptList = arc.getElementsByTagName("concept");
+			Element concept = (Element) conceptList.item(0);
+			NodeList featureList = concept.getElementsByTagName("feature");
+			List<String> tmpFeaturesList = new ArrayList<String>();
+			
+			for (int j = 0; j < featureList.getLength(); j++) {
+				Element feature = (Element) featureList.item(j);
+				tmpFeaturesList.add(feature.getAttribute("value"));
+			}
+			featuresList.add(tmpFeaturesList);
+		}
 		return featuresList;
 	}
 

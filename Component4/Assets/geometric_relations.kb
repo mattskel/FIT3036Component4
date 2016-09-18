@@ -1,0 +1,226 @@
+# This file defines all the geometric relationships that can occur between objects
+
+# define concept location_infer: Relation_R:
+# 	implementation=check_location(Parent,Child)
+# 	called+=<infer>
+
+define concept location_on:Location_R
+description += e.g. The book is on LOCATION
+implementation=check_location(Parent,Child)
+called+=on
+called+= on_top_of
+called+= at_top_of
+called+= on_top
+
+define concept location_under:Location_R
+description += e.g. The book is under LOCATION
+implementation=check_location(Parent,Child)
+called+=under
+called+=underneath
+called+=beneath
+called+=below
+
+define concept location_above:Location_R
+description += e.g. The book is above LOCATION
+implementation=check_location(Parent,Child)
+called+=above
+called+=over
+called+= on_top_of
+called+= at_top_of
+called+= on_top
+
+define concept location_inside:Location_R
+description += e.g. The book is in LOCATION
+implementation=check_location(Parent,Child)
+called+=in
+called+=inside
+called+=within
+
+define concept location_near:Location_R
+description += e.g. The book is near LOCATION
+implementation=check_location(Parent,Child)
+called+=near
+called+=by
+called+=passive_by
+called+=beside
+called+=besides
+
+define concept location_at:Location_R
+called+=at
+called+=from
+
+define concept location_inthecenterof:Location_R
+description += e.g. The book is in the center of LOCATION
+implementation=check_location(Parent,Child)
+called+=in_the_center_of
+called+=at_the_center_of
+called+=on_the_center_of
+called+=near_the_center_of
+called+=in_the_middle_of
+called+=at_the_middle_of
+called+=on_the_middle_of
+called+=near_the_middle_of
+called+=in_the_position_of
+called+=at_the_position_of
+called+=on_the_position_of
+called+=near_the_position_of
+
+define concept location_inthecornerof_on:Location_R
+description += e.g. The book is in the corner of LOCATION
+implementation=check_location(Parent,Child)
+called+=in_the_corner_of
+called+=on_the_corner_of
+called+=at_the_corner_of
+called+=near_the_corner_of
+called+=in_the_position_of
+called+=on_the_position_of
+called+=at_the_position_of
+called+=near_the_position_of
+
+define concept location_inthecornerof_off:Location_R
+description += e.g. The book is in the corner of LOCATION
+implementation=check_location(Parent,Child)
+called+=at_the_corner_of
+called+=near_the_corner_of
+called+=at_the_position_of
+called+=near_the_position_of
+
+define concept location_attheedgeof_on:Location_R
+description += e.g. The book is at the edge of LOCATION
+implementation=check_location(Parent,Child)
+called+=in_the_edge_of
+called+=on_the_edge_of
+called+=at_the_edge_of
+called+=near_the_edge_of
+called+=in_the_position_of
+called+=on_the_position_of
+called+=at_the_position_of
+called+=near_the_position_of
+
+define concept location_attheedgeof_off:Location_R
+description += e.g. The book is at the edge of LOCATION
+implementation=check_location(Parent,Child)
+called+=at_the_edge_of
+called+=near_the_edge_of
+called+=at_the_position_of
+called+=near_the_position_of
+
+define concept location_attheendof_on:Location_R
+description += e.g. The book is at the end of LOCATION
+implementation=check_location(Parent,Child)
+called+=in_the_end_of
+called+=on_the_end_of
+called+=at_the_end_of
+called+=near_the_end_of
+called+=in_the_position_of
+called+=on_the_position_of
+called+=at_the_position_of
+called+=near_the_position_of
+
+define concept location_attheendof_off:Location_R
+description += e.g. The book is at the end of LOCATION
+implementation=check_location(Parent,Child)
+called+=at_the_end_of
+called+=near_the_end_of
+called+=at_the_position_of
+called+=near_the_position_of
+
+define concept location_infrontof_off:Location_R
+description += e.g. The book is in front of LOCATION
+implementation=check_location(Parent,Child)
+called+=in_front_of
+called+=at_front_of
+called+=in_position_of
+called+=at_position_of
+
+define concept location_infrontof_on:Location_R
+description += e.g. The book is in front of LOCATION
+implementation=check_location(Parent,Child)
+called+=in_front_of
+called+=at_front_of
+called+=in_position_of
+called+=at_position_of
+
+define concept location_inbackof_off:Location_R
+description += e.g. The book is in back of LOCATION
+implementation=check_location(Parent,Child)
+called+=in_back_of
+called+=at_back_of
+called+=behind
+called+=in_position_of
+called+=at_position_of
+
+define concept location_inbackof_on:Location_R
+description += e.g. The book is in back of LOCATION
+implementation=check_location(Parent,Child)
+called+=in_back_of
+called+=at_back_of
+called+=in_position_of
+called+=at_position_of
+
+define concept location_totherightof_off:Location_R
+description += e.g. The book is to the right of LOCATION
+implementation=check_location(Parent,Child)
+called+=to_the_right_of
+called+=on_the_right_of
+called+=in_the_right_of
+called+=near_the_right_of
+called+=at_the_right_of
+called+=to_the_position_of
+called+=on_the_position_of
+called+=in_the_position_of
+called+=near_the_position_of
+called+=at_the_position_of
+
+define concept location_totherightof_on:Location_R
+description += e.g. The book is to the right of LOCATION
+implementation=check_location(Parent,Child)
+called+=to_the_right_of
+called+=on_the_right_of
+called+=in_the_right_of
+called+=near_the_right_of
+called+=at_the_right_of
+called+=to_the_position_of
+called+=on_the_position_of
+called+=in_the_position_of
+called+=near_the_position_of
+called+=at_the_position_of
+
+define concept location_totheleftof_off:Location_R
+description += e.g. The book is to the left of LOCATION
+implementation=check_location(Parent,Child)
+called+=to_the_left_of
+called+=on_the_left_of
+called+=in_the_left_of
+called+=near_the_left_of
+called+=at_the_left_of
+called+=to_the_position_of
+called+=on_the_position_of
+called+=in_the_position_of
+called+=near_the_position_of
+called+=at_the_position_of
+
+define concept location_totheleftof_on:Location_R
+description += e.g. The book is to the left of LOCATION
+implementation=check_location(Parent,Child)
+called+=to_the_left_of
+called+=on_the_left_of
+called+=in_the_left_of
+called+=near_the_left_of
+called+=at_the_left_of
+called+=to_the_position_of
+called+=on_the_position_of
+called+=in_the_position_of
+called+=near_the_position_of
+called+=at_the_position_of
+
+define concept location_far:Location_R
+description += e.g. The book is far from LOCATION
+implementation=check_location(Parent,Child)
+called+=far_from
+called+=away_from
+called+=far_away_from
+called+=farther_from
+called+=farther_away_from
+called+=further_from
+called+=further_away_from
