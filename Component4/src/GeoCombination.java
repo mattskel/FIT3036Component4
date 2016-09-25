@@ -8,6 +8,7 @@ public class GeoCombination {
 	
 	public GeoCombination() {}
 	
+	// Input: [[totherightof_off, totherightof_on], [attheedgeof_on]]
 	public void SetGeoRelations(List<List<String>> arcGeoRelationsIn) {
 		arcGeoRelations = arcGeoRelationsIn;
 	}
@@ -19,6 +20,9 @@ public class GeoCombination {
 		return geoRelationCombinations;
 	}
 	
+	// Generates all possible arc combinations
+	// [[totherightof_off, totherightof_on], [attheedgeof_on]] becomes...
+	// [[totherightof_off, attheedgeof_on], [totherightof_on, attheedgeof_on]]
 	public void CombinationGenerator (List<String> currentCombination, int index) {
 		if (index >= numArcs) {
 			geoRelationCombinations.add(currentCombination);

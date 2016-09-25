@@ -16,7 +16,13 @@ public class main {
 		
 		// Uploads a UCG from a given file name
 		UCGReader reader = new UCGReader();
-		reader.RetriveUCG("UCG_0.xml");
+		reader.RetriveUCG("UCG_1.xml");
+		
+		System.out.println(reader.GetNodeArcs());
+		System.out.println(reader.GetNodeLabels());
+		System.out.println(reader.GetArcLabels());
+		
+		System.out.println(reader.GetSemantics());
 		
 		// Generates all possible combinations for nodes from the synonym KB
 		//[[plate, microwave, table], [plate, microwave, desk],...]
@@ -30,6 +36,8 @@ public class main {
 			synonymComb.AddSynonymList((synonymList));
 		}
 		List<List<String>> synCombinationList = synonymComb.GetCombinations();
+		System.out.println("Synonym Combinations: ");
+		System.out.println(synCombinationList);
 		
 		// Retrieves all concepts from a given image
 		ConceptReader CR = new ConceptReader();
@@ -52,6 +60,8 @@ public class main {
 			}
 			conceptIDs.add(tmpList);
 		}
+		System.out.println("\nConcept Combinations: ");
+		System.out.println(conceptIDs);
 		
 		// The following code generates a list for each arc
 		// The list contains the possible geo relations from the KB
@@ -68,7 +78,6 @@ public class main {
 		for (String called : arcCalled) {
 			geoRelations.add(SR.getRelation(called));
 		}
-		System.out.println(geoRelations);
 		
 		// Generates all possible arc combinations
 		// [[totherightof_off, totherightof_on], [attheedgeof_on]] becomes...
@@ -76,6 +85,20 @@ public class main {
 		GeoCombination geoCombination = new GeoCombination();
 		geoCombination.SetGeoRelations(geoRelations);
 		List<List<String>> geoCombsList = geoCombination.GetCombinations();
+		System.out.println("\nGeo Relation Combinations");
 		System.out.println(geoCombsList);
+		
+		// ICGWriter
+		ICGWriter icgWriter = new ICGWriter();
+		List<List<Concept>> cc = conceptCombination.GetCombinations();
+		icgWriter.GenerateICG();
+		
+		Interpreter interpreter = new Interpreter();
+		interpreter.SetNodeLabels(reader.GetNodeLabels());
+		interpreter.SetArcLabels(reader.GetArcLabels());
+		interpreter.SetConcepts(conceptCombination.GetCombinations());
+		interpreter.SetRelations(geoCombination.GetCombinations());
+		interpreter.SetSemantics(reader.GetSemantics());
+		interpreter.GenerateInterpretations();
 	}
 }

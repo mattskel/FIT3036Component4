@@ -158,6 +158,7 @@ public class UCGWriter {
 	}
 	
 	// For now this will only support at most 2 landmarks
+	// We also build the UCGs from here too
 	public void GenerateArcs() {
 		
 		// Clean the directory before writing
@@ -182,7 +183,7 @@ public class UCGWriter {
 			for (int j = 0; j < arcs.size(); j++) {
 				// Create the arc element
 				Element arc = document.createElement("arc");
-				arc.setAttribute("label", "arc");
+				arc.setAttribute("label", "Arc" + j);
 				// Create the concept and add to the arc
 				Element concept = document.createElement("concept");
 				concept.setAttribute("kind", "base");
