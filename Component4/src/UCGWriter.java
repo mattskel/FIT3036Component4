@@ -43,11 +43,12 @@ public class UCGWriter {
 	public UCGWriter() {}
 	
 	// Input a tagged utterance
-	// Interprets as a UCG
+	// Sorts into objects, landmarks and arcs (prepositions and specifiers)
+	// Stores words in lists
 	public void SortTaggedUtterance(String taggedUtterance) {
 		
-		// Sorts all the words from the tagged utterance
-		// stores words in lists
+		// Stores words and their tags in a list
+		// [The:B-O, chair:I-O, in:B-P, front:I-P,...]
 		List<String> utteranceList = new ArrayList<String>(Arrays.asList(taggedUtterance.split(" ")));
 		
 		int index = 0;
@@ -55,6 +56,7 @@ public class UCGWriter {
 		List<String> tmpArcList = new ArrayList<String>();
 		while(index < utteranceList.size()) {
 			String tmpString = utteranceList.get(index);
+			// Breaks up the word and the tag so they can be assessed individually, [chair, I-O]
 			List<String> tmpList = new ArrayList<String>(Arrays.asList(tmpString.split(":")));
 			String word = tmpList.get(0);
 			String tag = tmpList.get(1);
@@ -79,15 +81,7 @@ public class UCGWriter {
 			}
 			index += 1;
 		}
-		// Set the number of nodes
-		numNodes = 1 + landmarks.size();
-		// Testing
-		/*
-		System.out.println(arcs.size());
-		for (int i = 0; i < arcs.size(); i++) {
-			System.out.println(arcs.get(i));
-		}
-		*/
+		numNodes = 1 + landmarks.size();	// Set the number of nodes
 	}
 	
 	public void InitialiseDocument() {
@@ -104,10 +98,12 @@ public class UCGWriter {
 		// Create the root element
 		rootElement = document.createElement("CG");
 		document.appendChild(rootElement);
-		// Create the feature Element
-//		feature = document.createElement("feature");
 	}
 	
+	/*
+	 * The nodes of the UCG will be made up of an object and landmarks
+	 * These are generated first with no arcs in the order they are spoken
+	 */
 	public void GenerateNodes() {
 		
 		for (int i = 0; i < numNodes; i++) {
@@ -130,23 +126,22 @@ public class UCGWriter {
 			// Add the node features
 			for (int j = 0; j < 4; j++) {
 				Element feature = document.createElement("feature");
-//				Element tmpFeature = feature;
 				feature.setAttribute("key", featuresList[j]);
 				switch(j) {
-				case 0:
+				case 0:	// called
 					feature.setAttribute("value", nodeList.get(nodeList.size() - 1));
 					break;
-				case 1:
+				case 1:	// cg_role
 					feature.setAttribute("value","node");
 					break;
-				case 2:
+				case 2:	// definiteness
 					if (nodeList.get(0).equals("a")) {
 						feature.setAttribute("value", "indefinite");
 					} else {
 						feature.setAttribute("value", "definite");
 					}
 					break;
-				case 3:
+				case 3:	//determiner
 					feature.setAttribute("value", "definite");
 					break;
 				default:
@@ -157,8 +152,13 @@ public class UCGWriter {
 		}
 	}
 	
-	// For now this will only support at most 2 landmarks
-	// We also build the UCGs from here too
+	/*
+	 * Generate the arcs in the UCG using the prepositions and specifiers
+	 * The method only supports at most two arcs (two landmarks)
+	 * The arc between the object and the first spoken landmark will always be the same
+	 * The second arc can be from the object to landmark2 or landmark1 to landmark2
+	 * After the second arc is added the UCG is built
+	 */
 	public void GenerateArcs() {
 		
 		// Clean the directory before writing
@@ -167,17 +167,6 @@ public class UCGWriter {
 		int numUCGs = landmarks.size(); // number UCGs based on landmarks
 		
 		NodeList nList = document.getElementsByTagName("node");
-		
-		/*
-		// Create the arc element
-		Element arc = document.createElement("arc");
-		arc.setAttribute("label", "arc");
-		// Create the concept and add to the arc
-		Element concept = document.createElement("concept");
-		concept.setAttribute("kind", "base");
-		// Add the concept to the arc
-		arc.appendChild(concept);
-		*/
 		
 		for (int i = 0; i < numUCGs; i++) {
 			for (int j = 0; j < arcs.size(); j++) {
@@ -195,7 +184,6 @@ public class UCGWriter {
 					switch (k) {
 					case 0:
 						List<String> arcValueList = arcs.get(j);
-//						System.out.println(tmpList);
 						String arcValueString = arcValueList.get(0);
 						for (int l = 1; l < arcValueList.size(); l++) {
 							arcValueString += "_" + arcValueList.get(l);
@@ -215,14 +203,19 @@ public class UCGWriter {
 				child.setAttribute("node", childNode.getAttribute("label"));
 				arc.appendChild(child);
 				
+				// The first arc is always appended to the object
+				// Only need to append it once hence i == 0
 				if (i == 0) {
-					// The first arc is always appended to the object
-					// Only need to append it once hence i == 0
 					Element parentNode = (Element) nList.item(0);
 					parentNode.appendChild(arc);
 //					BuildXML(i);
 				}
-				if (j == 1) {
+				// Sets the parent node for the arc
+				// Uses i to determine if it is the object or the first landmark
+				// This will be called for each iteration of i, hence numUCGs
+				// This only works for at most two landmarks
+				// Because this arc is only temporary, build the UCG here and then reomve the arc
+				if (j == arcs.size() - 1) {
 					Element parentNode = (Element) nList.item(i);
 					parentNode.appendChild(arc);
 					BuildXML(i);
@@ -233,6 +226,10 @@ public class UCGWriter {
 		}
 	}
 	
+	/*
+	 * Cleans the UCG directory
+	 * Removes any existing UCGs in the file
+	 */
 	public void CleanDirectory() {
 		File directory = new File("UCG");
 		File[] directoryFileList = directory.listFiles();
@@ -243,7 +240,9 @@ public class UCGWriter {
 		}
 	}
 	
-	
+	/*
+	 * Writes the XML to a file
+	 */
 	public void BuildXML (int fileNumber) {
 		
 		transformerFactory = TransformerFactory.newInstance();
@@ -253,22 +252,8 @@ public class UCGWriter {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		// Clean the directory
-		/*
-		File directory = new File("UCG");
-		File[] directoryFileList = directory.listFiles();
-		for (File f : directoryFileList) {
-			if (f.isFile() && f.exists()) {
-				f.delete();
-			}
-		}
-		*/
-//		System.out.println(fileNumber);
 		StreamResult result = new StreamResult(new File("UCG/UCG_" + fileNumber + ".xml"));
-		
 		try {
-//			System.out.println("HERE");
 			transformer.transform(new DOMSource(document), result);
 		} catch (TransformerException e) {
 			// TODO Auto-generated catch block

@@ -13,6 +13,8 @@ public class GeoCombination {
 		arcGeoRelations = arcGeoRelationsIn;
 	}
 	
+	
+	// Be careful not to call this twice
 	public List<List<String>> GetCombinations() {
 		numArcs = arcGeoRelations.size();
 		List<String> initList = new ArrayList<String>();

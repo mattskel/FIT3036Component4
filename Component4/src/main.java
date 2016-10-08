@@ -4,11 +4,23 @@ import java.util.*;
 public class main {
 	public static void main(String[] args) throws IOException {
 		
-		// Generates a UCG from a tagged String
+		String myString;
+//		myString = "The:B-O Mug:I-O on:B-P the:B-S edge:I-S of:I-S the:B-L table:I-L near:B-P the:B-L lamp:I-L";
+//		myString = "The:B-O plate:I-O near:B-P the:B-L microwave:I_L on:B-P the:B_S edge:I-S of:I-S the:B-L table:I-L";
+//		myString = "The:B-O plate:I-O to:B-P the:B-S right:I-S of:I-S the:B-L microwave:I_L on:B-P the:B-L table:I-L";
+//		myString = "The:B-O hammer:I-O in:B-P the:B-S center:I-S of:I-S the:B-L microwave:I_L on:B-P the:B-L table:I-L";
+//		myString = "The:B-O plate:I-O in:B-P the:B-S center:I-S of:I-S the:B-L table:I-L";
+//		myString = "The:B-O plate:I-O near:B-P the:B-L microwave:I-L";
+//		myString = "The:B-O plate:I-O on:B-P the:B-S corner:I-S of:I-S the:B-L table:I-L";
+//		myString = "The:B-O plate:I-O near:B-P the:B-L ball:O-L on:B-P the:B-S corner:I-S of:I-S the:B-L table:I-L";
+//		myString = "The:B-O chair:I-O in:B-P front:I-P of:I-P the:B-L chest:I-L";
+//		myString = "The:B-O hammer:I-O behind:B-P the:B-L ball:I-L";
+//		myString = "The:B-O bookshelf:I-O behind:B-P the:B-L table:I-L";
+//		myString = "The:B-O chair:I-O on:B-P the:B-S right:I-S of:I-S the:B-L table:I-L";
+//		myString = "The:B-O chair:I-O in:B-P front:I-P of:I-P the:B-L bookcase:I-L";
+		myString = "The:B-O ball:I-O on:B-P the:B-S left:I-S of:I-S the:B-L table:I-L";
+		
 		UCGWriter writer = new UCGWriter();
-//		String myString = "The:B-O Mug:I-O on:B-P the:B-S edge:I-S of:I-S the:B-L table:I-L near:B-P the:B-L lamp:I-L";
-//		String myString = "The:B-O plate:I-O near:B-P the:B-L microwave:I_L on:B-P the:B_S edge:I-S of:I-S the:B-L table:I-L";
-		String myString = "The:B-O plate:I-O to:B-P the:B-S right:I-S of:I-S the:B-L microwave:I_L on:B-P the:B_S edge:I-S of:I-S the:B-L table:I-L";
 		writer.SortTaggedUtterance(myString);
 		writer.InitialiseDocument();
 		writer.GenerateNodes();
@@ -16,9 +28,11 @@ public class main {
 		
 		// Uploads a UCG from a given file name
 		UCGReader reader = new UCGReader();
-		reader.RetriveUCG("UCG_1.xml");
+		reader.RetriveUCG("UCG_0.xml");
+		
 		
 		System.out.println(reader.GetNodeArcs());
+		System.out.println("!HERE");
 		System.out.println(reader.GetNodeLabels());
 		System.out.println(reader.GetArcLabels());
 		
@@ -41,7 +55,7 @@ public class main {
 		
 		// Retrieves all concepts from a given image
 		ConceptReader CR = new ConceptReader();
-		List<Concept> concepts = CR.GetFromImage("Assets/Image/image2.kb");
+		List<Concept> concepts = CR.GetFromImage("Assets/Image/image4.kb");
 		
 		// Generates all possible combinations of concept objects
 		// [[blue_plate3, white_microwave12, brown_table1], [green_plate4, white_microwave12, brown_table1],...]
@@ -93,12 +107,27 @@ public class main {
 		List<List<Concept>> cc = conceptCombination.GetCombinations();
 		icgWriter.GenerateICG();
 		
+		// Need to get the speaker details and give it to the evaluator
+		int conceptIndex = 0;
+//		System.out.println(concepts.size());
+		while (conceptIndex < concepts.size()) {
+			Concept concept = concepts.get(conceptIndex);
+			if (concept.GetName().equals("speaker")) {
+				break;
+			}
+			conceptIndex++;
+		}
+		
+		Concept speakerConcept = concepts.get(conceptIndex);
+//		System.out.println(speakerConcept.GetName());
+		
 		Interpreter interpreter = new Interpreter();
 		interpreter.SetNodeLabels(reader.GetNodeLabels());
 		interpreter.SetArcLabels(reader.GetArcLabels());
 		interpreter.SetConcepts(conceptCombination.GetCombinations());
-		interpreter.SetRelations(geoCombination.GetCombinations());
+		interpreter.SetRelations(geoCombsList);
 		interpreter.SetSemantics(reader.GetSemantics());
+		interpreter.SetSpeaker(concepts);
 		interpreter.GenerateInterpretations();
 	}
 }
