@@ -62,6 +62,19 @@ public class Concept {
     public float x() {return location_xyz[0];}
     public float y() {return location_xyz[1];}
     public float z() {return location_xyz[2];}
+    
+    /*
+  //centre coords
+    public float c_x() {return location_xyz[0] + size_wdh[0]/2;}
+    public float c_y() {return location_xyz[1] + size_wdh[1]/2;}
+    public float c_z() {return location_xyz[2] + size_wdh[2]/2;}
+
+    //max coords
+    public float m_x() {return location_xyz[0] + size_wdh[0];}
+    public float m_y() {return location_xyz[1] + size_wdh[1];}
+    public float m_z() {return location_xyz[2] + size_wdh[2];}
+    */
+    
     public float w() {return size_wdh[0];}
     public float d() {return size_wdh[1];}
     public float h() {return size_wdh[2];}

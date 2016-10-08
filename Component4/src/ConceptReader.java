@@ -19,29 +19,33 @@ public class ConceptReader {
 		while (true) {
 			line = bufferedReader.readLine();
 			if (line == null) break; //break if the file is completed
-			
 			if (line.startsWith("define")){
 				output.add(new Concept());
 				n++;
-//				output.get(n).setID(line.substring(line.indexOf("=")+2,line.indexOf(":")));
-				output.get(n).setID(line.substring(15,line.indexOf(":"))); // Change M. Skelley
+				output.get(n).setID(line.substring(15,line.indexOf(":")));
 				output.get(n).setName(line.substring(line.indexOf(":")+1,line.length()).toLowerCase());
 			}
 			
-			else if (line.startsWith("\tcolour =")){
-				output.get(n).setColour(line.substring(10,line.length()).toLowerCase());
+			else if (line.startsWith("colour =") || line.startsWith("\tcolour =")){
+				output.get(n).setColour(line.substring(line.indexOf("=")+2,line.length()).toLowerCase());
 			}
-			else if (line.startsWith("\tcolour_coord")){
+			else if (line.startsWith("colour_coord") || line.startsWith("\tcolour_coord")){
 				output.get(n).setColourCoord(getArray(line));
 			}
-			else if (line.startsWith("\tsize_wdh")){
+			else if (line.startsWith("size_wdh") || line.startsWith("\tsize_wdh")){
 				output.get(n).setSize(getArray(line));
 			}
-			else if (line.startsWith("\tlocation_xyz")){
+			else if (line.startsWith("location_xyz") || line.startsWith("\tlocation_xyz")){
 				output.get(n).setLocation(getArray(line));
 			}
-			else if (line.startsWith("\tangle")){
+			else if (line.startsWith("angle") || line.startsWith("\tangle")){
 				output.get(n).setAngle(Float.parseFloat(line.substring(line.indexOf("=")+2,line.length())));
+			}
+			else if (line.startsWith("face") || line.startsWith("\tface")){
+				output.get(n).setFace(true);
+			}
+			else if (line.startsWith("hollow") || line.startsWith("\thollow")){
+				output.get(n).setHollow(true);
 			}
 			
 			

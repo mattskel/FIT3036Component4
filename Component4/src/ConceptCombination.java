@@ -63,16 +63,29 @@ public class ConceptCombination {
 	}
 	
 	public List<List<Concept>> GetCombinations() {
+//		List<List<Concept>> = new ArrayList
 		return conceptCombinationList;
 	}
 	
-	public void GenerateCombinations(List<String> synonymListIn) {
+	/*public void GenerateCombinations(List<String> synonymListIn) {
 		SetSynonymCombination(synonymListIn);
 		GeneratePotentialConcepts();
 		if (allFound) {
 			numNodes = synonymList.size();
 			List<Concept> initList = new ArrayList<Concept>();
 			CombinationGenerator(initList, 0);
+		}
+	}*/
+	
+	public void GenerateCombinations(List<List<String>> synCombinationList) {
+		for (int i = 0; i < synCombinationList.size(); i++) {
+			SetSynonymCombination(synCombinationList.get(i));
+			GeneratePotentialConcepts();
+			if (allFound) {
+				numNodes = synonymList.size();
+				List<Concept> initList = new ArrayList<Concept>();
+				CombinationGenerator(initList, 0);
+			}
 		}
 	}
 	

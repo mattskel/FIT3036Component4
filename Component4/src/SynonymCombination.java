@@ -6,8 +6,11 @@
  */
 
 import java.util.*;
+import java.io.*;
 
 public class SynonymCombination {
+	
+	Synonyms syn;
 	
 	// Combinations of synonyms
 	List<List<String>> combinationList = new ArrayList<List<String>>();
@@ -17,7 +20,16 @@ public class SynonymCombination {
 	// Total number of nodes
 	int numNodes;
 	
-	public SynonymCombination() {	
+	public SynonymCombination() throws IOException {	
+		syn = new Synonyms("Assets/lexical.db");
+	}
+	
+	public void SetNodeFeatures(List<List<String>> nodeFeatures) {
+		for (int i = 0; i < nodeFeatures.size(); i++) {
+			List<String> tmpList = nodeFeatures.get(i);
+			List<String> synonymList = syn.getSynonyms(tmpList.get(0));
+			AddSynonymList((synonymList));
+		}
 	}
 	
 	// Add a new synonymList to the nodeSynonymList

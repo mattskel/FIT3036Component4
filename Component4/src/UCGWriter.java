@@ -260,5 +260,12 @@ public class UCGWriter {
 			e.printStackTrace();
 		}
 	}
+	
+	public void Run(String inputString) {
+		SortTaggedUtterance(inputString);
+		InitialiseDocument();
+		GenerateNodes();
+		GenerateArcs();
+	}
 
 }

@@ -34,6 +34,8 @@ public class UCGReader {
 		}
 	}
 	
+	public Document GetUCGDocument() { return document; }
+	
 	// Returns the features of all the concept nodes in the UCG
 	public List<List<String>> GetNodeFeatures() {
 		
@@ -87,10 +89,8 @@ public class UCGReader {
 	}
 	
 	// Return the arc labels if they exist for each node
-	// Does this even work?
-	// Does it get used anywhere?
-	// TODO
-	// Determine where this gets used if at all
+	// This is used in ICGWriter
+	// Need to check what for...
 	public List<List<String>> GetNodeArcs() {
 		List<List<String>> nodeArcLabels = new ArrayList<List<String>>();
 		NodeList nList = document.getElementsByTagName("node");
@@ -142,11 +142,13 @@ public class UCGReader {
 		return arcChildren;
 	}
 	
-	// GetSemantics
-	// Returns the Semantic interpretation of a UCG
-	// Interpretations are represented as lists of labels
-	// Object -> Relationship -> Landmark
-	// [nodeLabel, arcLabel, nodeLabel]
+	/*
+	 * Depending on the UCG the semantic interpretation will differ
+	 * GetSemantics returns the semantic interpretations of a UCG
+	 * Interpretations are represented as a list of labels
+	 * Object -> Relationship -> Landmark becomes [nodeLabel, arcLabel, nodeLabel]
+	 * This is used to interpret the score for each relation
+	 */
 	public List<List<String>> GetSemantics() {
 		List<List<String>> semanticsList = new ArrayList<List<String>>();
 		NodeList nList = document.getElementsByTagName("node");
@@ -165,6 +167,26 @@ public class UCGReader {
 			}
 		}
 		return semanticsList;
+	}
+	
+	public int GetNumNodes() {
+		NodeList nList = document.getElementsByTagName("node");
+		return nList.getLength();
+	}
+	
+	public List<List<String>> GetGeoRelations() throws IOException {
+		List<List<String>> geoRelations = new ArrayList<List<String>>();
+		List<String> arcCalled = new ArrayList<String>();
+		List<List<String>> arcFeatures = GetArcFeatures();
+		for (int i = 0; i < arcFeatures.size(); i++) {
+			List<String> tmpList = arcFeatures.get(i);
+			arcCalled.add(tmpList.get(0));
+		}
+		SpatialRelations SR = new SpatialRelations();
+		for (String called : arcCalled) {
+			geoRelations.add(SR.getRelation(called));
+		}
+		return geoRelations;
 	}
 
 }
