@@ -81,6 +81,10 @@ public class SemanticEvaluator {
 		return (float) Math.pow(2.0, -t * Math.pow(dist, a));
 	}
 	
+	/*
+	 * Insert
+	 */
+	
 	public float Location_infrontof(Concept object, Concept landmark, int flag) {
 		float perspectiveAlignment;
 		// Check if the landmark has a face or not

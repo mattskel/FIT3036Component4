@@ -14,13 +14,14 @@ public class main {
 //		myString = "The:B-O plate:I-O on:B-P the:B-S corner:I-S of:I-S the:B-L table:I-L";
 //		myString = "The:B-O plate:I-O near:B-P the:B-L ball:O-L on:B-P the:B-S corner:I-S of:I-S the:B-L table:I-L";
 //		myString = "The:B-O chair:I-O in:B-P front:I-P of:I-P the:B-L chest:I-L";
-		myString = "The:B-O hammer:I-O behind:B-P the:B-L ball:I-L";
+//		myString = "The:B-O hammer:I-O behind:B-P the:B-L ball:I-L";
 //		myString = "The:B-O bookshelf:I-O behind:B-P the:B-L table:I-L";
 //		myString = "The:B-O chair:I-O on:B-P the:B-S right:I-S of:I-S the:B-L table:I-L";
 //		myString = "The:B-O chair:I-O on:B-P the:B-S left:I-S of:I-S the:B-L table:I-L";
 //		myString = "The:B-O chair:I-O in:B-P front:I-P of:I-P the:B-L bookcase:I-L";
 //		myString = "The:B-O ball:I-O on:B-P the:B-S left:I-S of:I-S the:B-L table:I-L";
 //		myString = "The:B-O ball:I-O on:B-P the:B-L table:I-L in:B-P front:I-P of:I-P the:B-L bookcase:I-L";
+		myString = "the:B-O ball:I-O on:B-P the:B-S table:I-O in:B-P front:I-S of:I-S the:B-L bookcase:I-L";
 		
 		/*
 		 * The following block takes in a tagged utterance and generates the UCG(s)
