@@ -4,6 +4,29 @@ import java.util.*;
 public class main {
 	public static void main(String[] args) throws IOException {
 		
+		/* IMPORTANT */
+		// Need to make sure we are talking about the same image
+		int imageNumber = 2;
+		
+		SSP ssp = new SSP();
+		
+//		String utterance = "the plate in the corner of the big table";
+//		String utterance = "the plate inside the microwave";
+//		String utterance = "the plate on the left of the screwdriver";	// This is a good example of why the projective don't work that well
+//		String utterance = "the plate in front of the microwave on the left of the glass";
+		String utterance = "the plate on the left of the glass";
+//		String utterance = "the plate in front of the microwave";
+//		String utterance = "the microwave next to the plate";	// Can't deal with "next to"
+//		String utterance = "the ball on the edge of the table";
+//		String utterance = "the hammer on the microwave on the table";
+		
+		try {
+			ssp.RunModel(utterance);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		String myString;
 //		myString = "The:B-O Mug:I-O on:B-P the:B-S edge:I-S of:I-S the:B-L table:I-L near:B-P the:B-L lamp:I-L";
 //		myString = "The:B-O plate:I-O near:B-P the:B-L microwave:I_L on:B-P the:B_S edge:I-S of:I-S the:B-L table:I-L";
@@ -21,7 +44,10 @@ public class main {
 //		myString = "The:B-O chair:I-O in:B-P front:I-P of:I-P the:B-L bookcase:I-L";
 //		myString = "The:B-O ball:I-O on:B-P the:B-S left:I-S of:I-S the:B-L table:I-L";
 //		myString = "The:B-O ball:I-O on:B-P the:B-L table:I-L in:B-P front:I-P of:I-P the:B-L bookcase:I-L";
-		myString = "the:B-O ball:I-O on:B-P the:B-S table:I-O in:B-P front:I-S of:I-S the:B-L bookcase:I-L";
+//		myString = "The:B-O ball:I-O on:B-P the:B-S edge:I-S of:I-S the:B-L table:I-L";
+//		myString = "The:B-O ball:I-O on:B-P the:B-S edge:I-S of:I-S the:B-L table:I-L in:B-P front:I-P of:I-P the:B-L bookcase:I-L";
+//		myString = "the:B-O ball:I-O on:B-P the:B-S table:I-O in:B-P front:I-S of:I-S the:B-L bookcase:I-L";	//CRASH
+//		myString = "The:B-O ball:I-O";
 		
 		/*
 		 * The following block takes in a tagged utterance and generates the UCG(s)
@@ -29,7 +55,7 @@ public class main {
 		 * Output: UCG_0.xml, UCG_1.xml...
 		 */
 		UCGWriter writerUCG = new UCGWriter();
-		writerUCG.Run(myString);
+		writerUCG.Run(ssp.GetTaggedUtterance());
 		
 		File folder = new File("UCG");
 		File[] listOfFiles = folder.listFiles();
@@ -42,6 +68,7 @@ public class main {
 		    	String fileName = listOfFiles[i].getName();
 		        System.out.println(fileName);
 		        Interpreter interpreter = new Interpreter();
+		        interpreter.SetImageNumber(imageNumber);
 				interpreter.Run(fileName);
 				if (interpreter.GetScore() > maxScore) {
 					interpreterList = new ArrayList<Interpreter>();
@@ -53,10 +80,10 @@ public class main {
 		     } 
 		}
 		
-		int interpreterIndex = 0;
+		int interpreterIndex = 0;	// Interpreter index is used to name the ICG files
 		for (Interpreter interpreter : interpreterList) {
-			interpreter.WriteICG(interpreterIndex);
-			interpreterIndex += 1;
+			interpreterIndex = interpreter.WriteICG(interpreterIndex);	// We also need to update the interpreter index
+//			interpreterIndex += 1;
 		}
 		
 //		Interpreter interpreter = new Interpreter();
@@ -98,8 +125,8 @@ public class main {
 		//System.out.println("synCombinationList = " + synCombinationList);
 		
 		// Retrieves all concepts from a given image
-		ConceptReader CR = new ConceptReader();
-		List<Concept> concepts = CR.GetFromImage("Assets/Image/image4.kb");
+//		ConceptReader CR = new ConceptReader();
+//		List<Concept> concepts = CR.GetFromImage("Assets/Image/image4.kb");
 		
 		/*
 		 * The previously generated synonym combination list generates concept combinations

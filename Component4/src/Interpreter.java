@@ -5,6 +5,8 @@ public class Interpreter {
 	
 	UCGReader reader;
 	
+	int imageNumber;
+	
 	List<String> nodeLabelList = new ArrayList<String>();
 	List<String> arcLabelList = new ArrayList<String>();
 	
@@ -37,6 +39,10 @@ public class Interpreter {
 	
 	public void SetRelations(List<List<String>> relations) {
 		relationList = relations;
+	}
+	
+	public void SetImageNumber(int imageNumberIn) {
+		imageNumber = imageNumberIn;
 	}
 	
 	/*
@@ -86,6 +92,7 @@ public class Interpreter {
 					tmpList.add(relationIndex);
 					highScoreIndex.add(tmpList);
 				} else if (totalScore == currentMax) {
+					System.out.println(conceptIndex);
 					List<Integer> tmpList = new ArrayList<Integer>();
 					tmpList.add(conceptIndex);
 					tmpList.add(relationIndex);
@@ -100,7 +107,7 @@ public class Interpreter {
 //		System.out.println(highScoreIndex);
 	}
 	
-	public void WriteICG(int index) {
+	public int WriteICG(int index) {
 		for (List<Integer> indexList : highScoreIndex) {
 			ICGWriter writer = new ICGWriter();
 			if (index == 0) {
@@ -112,7 +119,10 @@ public class Interpreter {
 			writer.InitialiseDocument();
 			writer.GenerateICG();
 			writer.BuildXML(index);
+			index += 1;
 		}
+		// We return this value so the next interpreter knows what number to use to write a new ICG file
+		return index;
 	}
 	
 	/*
@@ -140,7 +150,29 @@ public class Interpreter {
 				tmpScore.add(se.Location_near(object,landmark,0));
 			} else if (relation.equals("inthecornerof_on")) {
 //				System.out.println(se.Location_inthecornerof_on(object, landmark));
-				tmpScore.add(se.Location_inthecornerof_on(object, landmark));
+				tmpScore.add(se.Location_inthecornerof(object, landmark, true));
+			} else if (relation.equals("inthecornerof_off")) {
+				tmpScore.add(se.Location_inthecornerof(object, landmark, false));
+			} else if (relation.equals("inside")) {
+				tmpScore.add(se.Location_inside(object, landmark));
+			} else if (relation.equals("at")) {
+				tmpScore.add(se.Location_at(object, landmark));
+			} else if (relation.equals("far")) {
+				tmpScore.add(se.Location_far(object, landmark));
+			} else if (relation.equals("attheedgeof_on")){
+				tmpScore.add(se.Location_attheedgeof(object, landmark, true));
+			} else if (relation.equals("attheedgeof_off")){
+				tmpScore.add(se.Location_attheedgeof(object, landmark, false));
+			} else if (relation.equals("attheendof_on")){
+				tmpScore.add(se.Location_attheendof(object, landmark, true));
+			} else if (relation.equals("attheendof_off")){
+				tmpScore.add(se.Location_attheendof(object, landmark, false));
+			} else if (relation.equals("above")){
+				tmpScore.add(se.Location_above(object, landmark));
+			} else if (relation.equals("under")) {
+				tmpScore.add(se.Location_under(object, landmark));
+				
+				
 			} else if (relation.startsWith("infrontof")) {
 				se.SetSpeaker(speaker);
 				if (relation.substring(relation.lastIndexOf("_") + 1).equals("off")) {
@@ -177,9 +209,17 @@ public class Interpreter {
 //					System.out.println(se.Location_totheleftof(object, landmark, 1));
 					tmpScore.add(se.Location_totheleftof(object, landmark, 1));
 				}
-			}
+			} else { //if none of them match, give score for at
+//				System.out.println(se.Location_near(object,landmark,0));
+				tmpScore.add(se.Location_at(object,landmark));
+			} 
 		}
+		
+		//System.out.println(tmpScore);
+		
+		if (tmpScore.size() > 0) {tmpScore.set(0, (float) Math.round(tmpScore.get(0)*1000) / 1000);} //round out errors
 		System.out.println(tmpScore);
+		
 		return tmpScore;
 	}
 	
@@ -219,14 +259,18 @@ public class Interpreter {
 		
 		// Retrieves all concepts from a given image
 		ConceptReader CR = new ConceptReader();
-		List<Concept> concepts = CR.GetFromImage("Assets/Image/image4.kb");
+		List<Concept> concepts = CR.GetFromImage("Assets/Image/image" + imageNumber + ".kb");
 		
+		/* Set up the conceptCombination to generate combinations */
 		ConceptCombination conceptCombination = new ConceptCombination();
 		conceptCombination.SetConceptList(concepts);
 		
 		conceptCombination.GenerateCombinations(synCombinationList);
 		List<List<Concept>> currentCombinations = conceptCombination.GetCombinations();
 		
+//		System.out.println(currentCombinations.size());
+		
+		/* Set up the geoRelations to generate combinations */
 		List<List<String>> geoRelations = reader.GetGeoRelations();
 		GeoCombination geoCombination = new GeoCombination();
 		geoCombination.SetGeoRelations(geoRelations);

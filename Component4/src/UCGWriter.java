@@ -161,14 +161,18 @@ public class UCGWriter {
 	 */
 	public void GenerateArcs() {
 		
+		
+		
 		// Clean the directory before writing
 		CleanDirectory();
 		
-		int numUCGs = landmarks.size(); // number UCGs based on landmarks
+		// If there are no landmarks then we want to set it to 1
+		int numUCGs = (landmarks.size() > 0) ? landmarks.size() : 1; // number UCGs based on landmarks
 		
 		NodeList nList = document.getElementsByTagName("node");
 		
 		for (int i = 0; i < numUCGs; i++) {
+			System.out.println("HERE");
 			for (int j = 0; j < arcs.size(); j++) {
 				// Create the arc element
 				Element arc = document.createElement("arc");
@@ -222,7 +226,8 @@ public class UCGWriter {
 					parentNode.removeChild(arc);
 				}
 			}
-//			BuildXML(i);
+			
+			if (landmarks.size() == 0) {BuildXML(i);} //Ensures we build an xml for no landmarks
 		}
 	}
 	
