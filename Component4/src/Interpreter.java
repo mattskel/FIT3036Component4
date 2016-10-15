@@ -19,6 +19,8 @@ public class Interpreter {
 	List<Float> scoreList = new ArrayList<Float>();
 	List<List<Integer>> highScoreIndex = new ArrayList<List<Integer>>();	// Stores an index of the highest scores
 	
+	List<String> ICGObjectIDs = new ArrayList<String>();
+	
 	float absoluteMax = 0.0f;
 	
 	Concept speaker;
@@ -70,6 +72,8 @@ public class Interpreter {
 	
 	public float GetScore() { return absoluteMax; }
 	
+	public List<String> GetICGObjectIDs() { return ICGObjectIDs; }
+	
 	// Generates every possible combination for concepts and relations
 	// Generates a score for each possible interpretation and stores it in a list
 	public void GenerateInterpretations() {
@@ -115,6 +119,8 @@ public class Interpreter {
 			}
 			writer.SetUCG(reader.GetUCGDocument());
 			writer.SetConcepts(conceptList.get(indexList.get(0)));
+			ICGObjectIDs.add(conceptList.get(indexList.get(0)).get(0).GetID());	// Stores the object IDs
+//			System.out.println(conceptList.get(indexList.get(0)).get(0).GetID());
 			writer.SetArcs(relationList.get(indexList.get(1)));
 			writer.InitialiseDocument();
 			writer.GenerateICG();
@@ -216,10 +222,11 @@ public class Interpreter {
 		}
 		
 		//System.out.println(tmpScore);
-		
-		if (tmpScore.size() > 0) {tmpScore.set(0, (float) Math.round(tmpScore.get(0)*1000) / 1000);} //round out errors
+		for (int i = 0; i < tmpScore.size(); i++) {
+			{tmpScore.set(i, (float) Math.round(tmpScore.get(i)*1000) / 1000);} //round out errors
+			
+		}
 		System.out.println(tmpScore);
-		
 		return tmpScore;
 	}
 	

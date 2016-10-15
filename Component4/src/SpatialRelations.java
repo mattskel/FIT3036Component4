@@ -52,6 +52,10 @@ public class SpatialRelations {
 			}
 		}
 		
+		if (output.isEmpty()){
+			output.add("at");
+		}
+		
 		return output;
 	}
 

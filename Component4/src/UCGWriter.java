@@ -1,4 +1,3 @@
-
 import java.util.*;
 import javax.xml.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -30,9 +29,10 @@ public class UCGWriter {
     Transformer transformer;
 	
     
-	List<String> object = new ArrayList<String>();	// Strings of the object
+//	List<String> object = new ArrayList<String>();	// Strings of the object
 	
-	List<List<String>> landmarks = new ArrayList<List<String>>();	// Strings of the landmarks
+//	List<List<String>> landmarks = new ArrayList<List<String>>();	// Strings of the landmarks
+    List<List<String>> objects = new ArrayList<List<String>>();		//Strings of all the objects and landmarks
 	List<List<String>> arcs = new ArrayList<List<String>>();	// Strings of the preposition/specifier
 	
 	int numNodes;	// The total number of nodes in the graph
@@ -41,10 +41,13 @@ public class UCGWriter {
 	String[] featuresList = {"called", "cg_role","definiteness","determiner"};
 	
 	public UCGWriter() {}
-	
-	// Input a tagged utterance
-	// Sorts into objects, landmarks and arcs (prepositions and specifiers)
-	// Stores words in lists
+	/*
+	 * Sorts a tagged input string into objects and arcs
+	 * Objects and landmarks are both treated as being the same
+	 * The tags are extracted from from the words and stored without tags
+	 * Input: "plate:O at:P table:L at:P..."
+	 * Generated: [plate,table,...], [at,...]
+	 */
 	public void SortTaggedUtterance(String taggedUtterance) {
 		
 		// Stores words and their tags in a list
@@ -52,6 +55,7 @@ public class UCGWriter {
 		List<String> utteranceList = new ArrayList<String>(Arrays.asList(taggedUtterance.split(" ")));
 		
 		int index = 0;
+		int lastTag = 0; //1: O, 2:P/S, 3: L
 		int currentArc = 0;
 		List<String> tmpArcList = new ArrayList<String>();
 		while(index < utteranceList.size()) {
@@ -60,28 +64,45 @@ public class UCGWriter {
 			List<String> tmpList = new ArrayList<String>(Arrays.asList(tmpString.split(":")));
 			String word = tmpList.get(0);
 			String tag = tmpList.get(1);
-			if (tag.charAt(2) == 'O') {
-				object.add(word);
-			} else if (tag.charAt(2) == 'L') {
-				if (tag.charAt(0) == 'B') {
-					List<String> newLandmarkList = new ArrayList<String>();
-					newLandmarkList.add(word);
-					landmarks.add(newLandmarkList);
+			if (tag.charAt(tag.length() - 1) == 'O') {
+				if (lastTag == 1){
+					objects.get(objects.size() - 1).add(word);
 				} else {
-					landmarks.get(landmarks.size() - 1).add(word);
+					lastTag = 1;
+					objects.add(new ArrayList<String>());
+					objects.get(objects.size() - 1).add(word);
 				}
-			} else if (tag.charAt(2) == 'P' || tag.charAt(2) == 'S') {
-				if (tag.equals("B-P")) {
-					List<String> newArcList = new ArrayList<String>();
-					newArcList.add(word);
-					arcs.add(newArcList);
+			} else if (tag.charAt(tag.length() - 1) == 'L') {
+				if (lastTag == 3){
+					objects.get(objects.size() - 1).add(word);
 				} else {
+					lastTag = 3;
+					objects.add(new ArrayList<String>());
+					objects.get(objects.size() - 1).add(word);
+				}
+			} else if (tag.charAt(tag.length() - 1) == 'P' || tag.charAt(tag.length() - 1) == 'S') {
+				if (lastTag == 2){
+					arcs.get(arcs.size() - 1).add(word);
+				} else {
+					lastTag = 2;
+					arcs.add(new ArrayList<String>());
 					arcs.get(arcs.size() - 1).add(word);
 				}
 			}
 			index += 1;
 		}
-		numNodes = 1 + landmarks.size();	// Set the number of nodes
+		
+		numNodes = objects.size();	// Set the number of nodes
+		
+		//if list of arcs is not length of objects minus 1. Adjust the length
+		
+		while (arcs.size() < objects.size()-1){
+			arcs.add(new ArrayList<String>());
+			arcs.get(arcs.size() - 1).add("at"); //use at whenever there is no valid positional phrase
+		}
+		while (arcs.size() > objects.size()-1){
+			arcs.remove(arcs.size()-1);
+		}
 	}
 	
 	public void InitialiseDocument() {
@@ -108,11 +129,13 @@ public class UCGWriter {
 		
 		for (int i = 0; i < numNodes; i++) {
 			List<String> nodeList = new ArrayList<String>();
-			if (i == 0) {
+			/*if (i == 0) {
 				nodeList = object;
 			} else {
 				nodeList = landmarks.get(i - 1);
-			}
+			}*/
+			
+			nodeList = objects.get(i);
 			
 			Element node = document.createElement("node");
 			rootElement.appendChild(node);
@@ -161,18 +184,14 @@ public class UCGWriter {
 	 */
 	public void GenerateArcs() {
 		
-		
-		
 		// Clean the directory before writing
 		CleanDirectory();
 		
-		// If there are no landmarks then we want to set it to 1
-		int numUCGs = (landmarks.size() > 0) ? landmarks.size() : 1; // number UCGs based on landmarks
+		int numUCGs = (objects.size() > 1) ? objects.size() - 1 : 1; // number UCGs based on objects
 		
 		NodeList nList = document.getElementsByTagName("node");
 		
 		for (int i = 0; i < numUCGs; i++) {
-			System.out.println("HERE");
 			for (int j = 0; j < arcs.size(); j++) {
 				// Create the arc element
 				Element arc = document.createElement("arc");
@@ -227,7 +246,7 @@ public class UCGWriter {
 				}
 			}
 			
-			if (landmarks.size() == 0) {BuildXML(i);} //Ensures we build an xml for no landmarks
+			if (objects.size() == 1) {BuildXML(i);} //Ensures we build an xml for no landmarks
 		}
 	}
 	

@@ -19,7 +19,7 @@ public class SemanticEvaluator {
 	// checks if the object is connected to the top or the edges of the landmark
 	public float Location_on(Concept object, Concept landmark) {
 		//if object is within 2cm of top of object
-		float leeway = 0.2f;
+		float leeway = 0.02f;
 		
 		if (object.z() > landmark.z() + landmark.h() - leeway && object.z() < landmark.z() + landmark.h() + leeway) {
 			return A_xy(object,landmark) / (float) Math.min(A_xy(object),A_xy(landmark));
@@ -385,6 +385,7 @@ public class SemanticEvaluator {
 						+ perspectiveVector[1] * normalEdgeToObject[1];
 		float dotCentre = perspectiveVector[0] * normalCentreToObject[0]
 						+ perspectiveVector[1] * normalCentreToObject[1];
+		
 		
 		
 		// We only want to deal with positives

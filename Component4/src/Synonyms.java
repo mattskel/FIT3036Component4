@@ -63,7 +63,9 @@ public class Synonyms {
 				}
 			}
 		}
-		
+		if(output.isEmpty()){
+			return getSynonyms("thing");
+		}
 		return output;
 	}
 }

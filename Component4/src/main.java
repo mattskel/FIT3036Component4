@@ -14,11 +14,12 @@ public class main {
 //		String utterance = "the plate inside the microwave";
 //		String utterance = "the plate on the left of the screwdriver";	// This is a good example of why the projective don't work that well
 //		String utterance = "the plate in front of the microwave on the left of the glass";
-		String utterance = "the plate on the left of the glass";
+//		String utterance = "the plate on the left of the glass";
 //		String utterance = "the plate in front of the microwave";
 //		String utterance = "the microwave next to the plate";	// Can't deal with "next to"
 //		String utterance = "the ball on the edge of the table";
-//		String utterance = "the hammer on the microwave on the table";
+		String utterance = "the hammer on the microwave on the table";
+//		String utterance = "the plate on the table";
 		
 		try {
 			ssp.RunModel(utterance);
@@ -48,6 +49,7 @@ public class main {
 //		myString = "The:B-O ball:I-O on:B-P the:B-S edge:I-S of:I-S the:B-L table:I-L in:B-P front:I-P of:I-P the:B-L bookcase:I-L";
 //		myString = "the:B-O ball:I-O on:B-P the:B-S table:I-O in:B-P front:I-S of:I-S the:B-L bookcase:I-L";	//CRASH
 //		myString = "The:B-O ball:I-O";
+//		myString = "plate:O at:P table:L at:P screwdriver:L at:P microwave:L at:P ball:L";
 		
 		/*
 		 * The following block takes in a tagged utterance and generates the UCG(s)
@@ -56,6 +58,7 @@ public class main {
 		 */
 		UCGWriter writerUCG = new UCGWriter();
 		writerUCG.Run(ssp.GetTaggedUtterance());
+//		writerUCG.Run(myString);
 		
 		File folder = new File("UCG");
 		File[] listOfFiles = folder.listFiles();
@@ -83,8 +86,11 @@ public class main {
 		int interpreterIndex = 0;	// Interpreter index is used to name the ICG files
 		for (Interpreter interpreter : interpreterList) {
 			interpreterIndex = interpreter.WriteICG(interpreterIndex);	// We also need to update the interpreter index
+			System.out.println(interpreter.GetICGObjectIDs());
 //			interpreterIndex += 1;
 		}
+		
+		
 		
 //		Interpreter interpreter = new Interpreter();
 //		interpreter.Run("UCG_0.xml");
