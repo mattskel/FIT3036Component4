@@ -164,6 +164,7 @@ public class SemanticEvaluator {
 		
 		float score = (float) Math.pow(2.0, -t * Math.pow(dist, a) / Math.pow(surfaceArea, b));
 		
+		System.out.println(Location_on(object,landmark));
 		if (on) return score * Location_on(object,landmark);
 		else return score;
 	}

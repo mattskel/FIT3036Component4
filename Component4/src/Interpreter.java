@@ -266,7 +266,7 @@ public class Interpreter {
 		
 		// Retrieves all concepts from a given image
 		ConceptReader CR = new ConceptReader();
-		List<Concept> concepts = CR.GetFromImage("Assets/Image/image" + imageNumber + ".kb");
+		List<Concept> concepts = CR.GetFromImage("Assets/Image/image" + (imageNumber + 1) + ".kb");
 		
 		/* Set up the conceptCombination to generate combinations */
 		ConceptCombination conceptCombination = new ConceptCombination();

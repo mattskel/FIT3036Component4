@@ -4,11 +4,21 @@ import java.util.*;
 public class main {
 	public static void main(String[] args) throws IOException {
 		
+		int port = 6079;
+        try
+        {
+            Thread t = new GreetingServer(port);
+            t.start();
+        }catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+		
 		/* IMPORTANT */
 		// Need to make sure we are talking about the same image
-		int imageNumber = 2;
+		/*int imageNumber = 2;
 		
-		SSP ssp = new SSP();
+		SSP ssp = new SSP();*/
 		
 //		String utterance = "the plate in the corner of the big table";
 //		String utterance = "the plate inside the microwave";
@@ -21,12 +31,12 @@ public class main {
 		String utterance = "the hammer on the microwave on the table";
 //		String utterance = "the plate on the table";
 		
-		try {
+		/*try {
 			ssp.RunModel(utterance);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		String myString;
 //		myString = "The:B-O Mug:I-O on:B-P the:B-S edge:I-S of:I-S the:B-L table:I-L near:B-P the:B-L lamp:I-L";
@@ -56,11 +66,11 @@ public class main {
 		 * Input: "The:B-O bookshelf:I-O behind:B-P..."
 		 * Output: UCG_0.xml, UCG_1.xml...
 		 */
-		UCGWriter writerUCG = new UCGWriter();
-		writerUCG.Run(ssp.GetTaggedUtterance());
+		/*UCGWriter writerUCG = new UCGWriter();
+		writerUCG.Run(ssp.GetTaggedUtterance());*/
 //		writerUCG.Run(myString);
 		
-		File folder = new File("UCG");
+		/*File folder = new File("UCG");
 		File[] listOfFiles = folder.listFiles();
 
 		List<Interpreter> interpreterList = new ArrayList<Interpreter>();
@@ -88,7 +98,7 @@ public class main {
 			interpreterIndex = interpreter.WriteICG(interpreterIndex);	// We also need to update the interpreter index
 			System.out.println(interpreter.GetICGObjectIDs());
 //			interpreterIndex += 1;
-		}
+		}*/
 		
 		
 		
