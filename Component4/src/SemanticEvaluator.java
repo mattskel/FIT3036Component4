@@ -118,7 +118,9 @@ public class SemanticEvaluator {
 		
 		//return the near score minus the inside score
 		//so that something inside an object is not also near it.
-		return score - Location_inside(object, landmark);
+		if (!object.GetHollow() && !landmark.GetHollow())
+			return Math.max(score - Location_inside(object, landmark), 0);
+		else return score;
 	}
 	
 	// Location_inthecornerof_on

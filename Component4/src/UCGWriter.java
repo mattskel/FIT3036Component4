@@ -1,3 +1,11 @@
+/*
+ * Generates the UCG for a tagged utterance
+ * Takes as input a tagged utterance
+ * Based on the tags sorts the input into landmarks/objects and relations
+ * landmarks/objects are represented as nodes in the UCG
+ * relations are represented as arcs
+ */
+
 import java.util.*;
 import javax.xml.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -28,10 +36,6 @@ public class UCGWriter {
 	TransformerFactory transformerFactory;
     Transformer transformer;
 	
-    
-//	List<String> object = new ArrayList<String>();	// Strings of the object
-	
-//	List<List<String>> landmarks = new ArrayList<List<String>>();	// Strings of the landmarks
     List<List<String>> objects = new ArrayList<List<String>>();		//Strings of all the objects and landmarks
 	List<List<String>> arcs = new ArrayList<List<String>>();	// Strings of the preposition/specifier
 	
@@ -52,6 +56,7 @@ public class UCGWriter {
 		
 		// Stores words and their tags in a list
 		// [The:B-O, chair:I-O, in:B-P, front:I-P,...]
+		if (taggedUtterance == null){taggedUtterance = "thing:O";}
 		List<String> utteranceList = new ArrayList<String>(Arrays.asList(taggedUtterance.split(" ")));
 		
 		int index = 0;
@@ -92,6 +97,15 @@ public class UCGWriter {
 			index += 1;
 		}
 		
+		
+		
+		//if there are no objects, create a thing
+		
+		if (objects.size() == 0){
+			objects.add(new ArrayList<String>());
+			objects.get(objects.size() - 1).add("thing");
+		}
+		
 		numNodes = objects.size();	// Set the number of nodes
 		
 		//if list of arcs is not length of objects minus 1. Adjust the length
@@ -129,11 +143,6 @@ public class UCGWriter {
 		
 		for (int i = 0; i < numNodes; i++) {
 			List<String> nodeList = new ArrayList<String>();
-			/*if (i == 0) {
-				nodeList = object;
-			} else {
-				nodeList = landmarks.get(i - 1);
-			}*/
 			
 			nodeList = objects.get(i);
 			

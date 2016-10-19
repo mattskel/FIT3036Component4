@@ -1,3 +1,13 @@
+/*
+ * Shallow Semantic Parser
+ * Reads in a string input
+ * adds features to each word in the string utterance
+ * Creates a .arff file of the features for each word
+ * Gives the .arff file to an existing Weka model
+ * Outputs tags for each word
+ * Also has the capability to build models from tagged .txt file
+ */
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -67,7 +77,7 @@ public class SSP {
 	/*
 	 * Takes an input file of semi tagged utterances and generates an arff file
 	 * For example portrait:O | on:P | the wall:L | above:P | the table:L could be an input
-	 * 
+	 * Generates a Weka model classifier from the input
 	 */
 	public void GenerateArffForModel(String fileName, String outputFileName) {
 		System.out.println("Generating the .arff file for the model..");
@@ -180,7 +190,10 @@ public class SSP {
 	}
 	
 	/*
-	 * Allows us to add a new smi tagged utterance to the already existing .arff file
+	 * Allows us to add a new semi tagged utterance to the already existing .arff file
+	 * Writing a .arff file can take a long time
+	 * Rather than rewriting we can just append new utterances to the end
+	 * Did this to try and improve the model
 	 */
 	public void AddUtteranceToInput(String utteranceIn) {
 		List<String> classLabelList = GenerateClassLabels(utteranceIn, 1);
@@ -203,19 +216,10 @@ public class SSP {
     		    //exception handling left as an exercise for the reader
     		}
     	}
-    	/*
-		try {
-		    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("data/arff/WekaModelInput.arff", true)));
-		    out.println(utteranceIn);
-		    out.close();
-		} catch (IOException e) {
-		    //exception handling left as an exercise for the reader
-		}
-		*/
 	}
 	
 	/*
-	 * For building a single utterance arff file
+	 * For building a single utterance .arff file
 	 * This is then given to the model to calculate the tags
 	 * Anytime a user speaks an utterance, one of these will need to be built
 	 */
@@ -276,7 +280,12 @@ public class SSP {
 	}
 	
 	/*
-	 * Run an arff file with unknown tags on a previously built model
+	 * Input: String = "The ball on..."
+	 * Builds the .arff file
+	 * Gives the .arff file to the existing weka model
+	 * Model makes predictions
+	 * Add the tags to the orignal string
+	 * taggedOutput = the:B-O ball:I-O on:B-P...
 	 */
 	public void RunModel(String utteranceIn) throws Exception {
 		System.out.println(utteranceIn);
@@ -322,7 +331,6 @@ public class SSP {
         }
         System.out.println(tagList);
         System.out.println(taggedOutput);
-//		System.out.println(prepositionWordList);
 
 	}
 	

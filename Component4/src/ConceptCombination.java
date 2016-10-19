@@ -1,10 +1,10 @@
 /*
  * Generates all possible combinations from the Synonym lists
  * Inputs a combination of synonyms
- * Searches the list of concept classes for a specific image
+ * Searches the list of concept classes from a specific image
  * finds all possible combination matches for the given input
  * Returns all possible classes
- * Returns possible classes as an index in the class list
+ * Returns possible concept classes as an index in the class list
  */
 
 import java.util.*;
@@ -67,16 +67,6 @@ public class ConceptCombination {
 		return conceptCombinationList;
 	}
 	
-	/*public void GenerateCombinations(List<String> synonymListIn) {
-		SetSynonymCombination(synonymListIn);
-		GeneratePotentialConcepts();
-		if (allFound) {
-			numNodes = synonymList.size();
-			List<Concept> initList = new ArrayList<Concept>();
-			CombinationGenerator(initList, 0);
-		}
-	}*/
-	
 	public void GenerateCombinations(List<List<String>> synCombinationList) {
 		for (int i = 0; i < synCombinationList.size(); i++) {
 			SetSynonymCombination(synCombinationList.get(i));
@@ -105,5 +95,7 @@ public class ConceptCombination {
 			}
 		}
 	}
+	
+	public int GetNumNodes(){return numNodes;}
 
 }

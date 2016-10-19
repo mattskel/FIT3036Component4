@@ -33,7 +33,6 @@ public class GreetingServer extends Thread
                 imageNumber = Integer.parseInt(in.readUTF());
                 
                 System.out.println(imageNumber);
-                System.out.println("HERE");
                 
                 // Create a new SSP
                 SSP ssp = new SSP();
@@ -100,6 +99,7 @@ public class GreetingServer extends Thread
 				if (interpreter.GetScore() > maxScore) {
 					interpreterList = new ArrayList<Interpreter>();
 					interpreterList.add(interpreter);
+					maxScore = interpreter.GetScore();
 				} else if (interpreter.GetScore() == maxScore) {
 					interpreterList.add(interpreter);
 				}

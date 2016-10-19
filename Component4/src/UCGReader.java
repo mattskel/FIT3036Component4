@@ -164,6 +164,12 @@ public class UCGReader {
 				semantic.add(arc.getAttribute("label"));
 				semantic.add(child.getAttribute("node"));
 				semanticsList.add(semantic);
+
+				List<String> semanticCalled = new ArrayList<String>();
+				semanticCalled.add(node.getAttribute("called"));
+				semanticCalled.add(arc.getAttribute("called"));
+				semanticCalled.add(child.getAttribute("called"));
+				System.out.println(semanticCalled);
 			}
 		}
 		return semanticsList;

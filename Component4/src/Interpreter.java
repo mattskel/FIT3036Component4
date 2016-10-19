@@ -1,3 +1,10 @@
+/*
+ * Interpreter
+ * Considers every possible combination from a UCG
+ * Interprets each possible combination
+ * Returns the highest score
+ */
+
 import java.io.*;
 import java.util.*;
 
@@ -6,6 +13,7 @@ public class Interpreter {
 	UCGReader reader;
 	
 	int imageNumber;
+	String UCGFilename;
 	
 	List<String> nodeLabelList = new ArrayList<String>();
 	List<String> arcLabelList = new ArrayList<String>();
@@ -57,6 +65,10 @@ public class Interpreter {
 		semanticsList = semantics;
 	}	
 	
+	/*
+	 * Sets the speaker concept
+	 * This is required for the projective relations
+	 */
 	public void SetSpeaker(List<Concept> concepts) {
 		int conceptIndex = 0;
 		
@@ -80,6 +92,7 @@ public class Interpreter {
 		float currentMax = 0.0f;
 		int conceptIndex = 0;
 		for (List<Concept> concepts : conceptList) {
+			//System.out.println(concepts.get(0).GetID());
 			int relationIndex = 0;
 			for (List<String> relations : relationList) {
 				List<Float> interpretationScore = GenerateSemanticAssignment(concepts, relations);
@@ -112,6 +125,9 @@ public class Interpreter {
 	}
 	
 	public int WriteICG(int index) {
+		
+		reader.RetriveUCG(UCGFilename);
+		
 		for (List<Integer> indexList : highScoreIndex) {
 			ICGWriter writer = new ICGWriter();
 			if (index == 0) {
@@ -257,9 +273,22 @@ public class Interpreter {
 	
 	public void Run(String fileName) throws IOException {
 		
+		UCGFilename = fileName;
+		
 		reader = new UCGReader();
 		reader.RetriveUCG(fileName);
 		
+		/*
+		 * Need to consider all the possible semantic interpretations of the utterance
+		 * The following block generates all the possible combinations of objects and landmarks
+		 * The node features are retrieved from the UCG
+		 * These are then compared with a list of known synonyms
+		 * The names used by the speaker are converted into the known synonyms
+		 * "table" becomes [table, desk, dinner_table]
+		 * A combination of these synonyms is then generated
+		 * [[ball, table], [ball, desk], [ball, dinner_table],...]
+		 * The synonyms may not appear as concepts in the image we are referring to
+		 */
 		SynonymCombination synonymComb = new SynonymCombination();
 		synonymComb.SetNodeFeatures(reader.GetNodeFeatures());
 		List<List<String>> synCombinationList = synonymComb.GetCombinations();
@@ -272,19 +301,42 @@ public class Interpreter {
 		ConceptCombination conceptCombination = new ConceptCombination();
 		conceptCombination.SetConceptList(concepts);
 		
+		/*
+		 * The previously generated synonym combination list generates concept combinations
+		 * The synonym has corresponding concepts in the list of concepts
+		 * There may be more than one concept for a given synonym
+		 * Need to make sure for each set of synonyms, all concept combinations are produced
+		 * For example the synonym plate could be either the concept blue_plate3 or green_plate4
+		 * A different concept combination needs to be generated for both
+		 * [[blue_plate3, white_microwave12, brown_table1], [green_plate4, white_microwave12, brown_table1],...]
+		 */
 		conceptCombination.GenerateCombinations(synCombinationList);
 		List<List<Concept>> currentCombinations = conceptCombination.GetCombinations();
 		
-//		System.out.println(currentCombinations.size());
+		/*
+		 * Each arc has a corresponding spatial relation
+		 * Typically each arc can either be "on" or "off"
+		 * Both spatial relations need to be assessed
+		 * For example "on" and "in_front_of" become [[on], [infrontof_off, infrontof_on]]
+		 * These possible spatial relations are stored in geoRelations
+		 */
 		
 		/* Set up the geoRelations to generate combinations */
 		List<List<String>> geoRelations = reader.GetGeoRelations();
 		GeoCombination geoCombination = new GeoCombination();
 		geoCombination.SetGeoRelations(geoRelations);
 		
+		System.out.println(geoRelations);
+		
 		SetNodeLabels(reader.GetNodeLabels());
 		SetArcLabels(reader.GetArcLabels());
 		SetConcepts(conceptCombination.GetCombinations());
+		System.out.println(conceptCombination.GetNumNodes());
+		for (List<Concept> conceptList : conceptCombination.GetCombinations()) {
+			for (Concept concept : conceptList) {
+				System.out.println(concept.GetID());
+			}
+		}
 		SetRelations(geoCombination.GetCombinations());
 		SetSemantics(reader.GetSemantics());
 		SetSpeaker(concepts);

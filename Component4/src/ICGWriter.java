@@ -61,7 +61,7 @@ public class ICGWriter {
 	}
 	
 	public void GenerateICG() {
-		int relationIndex = 0;
+		int RelationIndex = 0;
 		NodeList nList = documentUCG.getElementsByTagName("node");
 		for (int i = 0; i < nList.getLength(); i++) {
 			
@@ -80,6 +80,7 @@ public class ICGWriter {
 			nodeICG.appendChild(conceptICG);
 			
 			NodeList arcList = nodeUCG.getElementsByTagName("arc");
+			
 			for (int j = 0; j < arcList.getLength(); j++) {
 				
 				// Create the new arc element for the ICG
@@ -93,7 +94,7 @@ public class ICGWriter {
 				
 				Element arcConceptICG = documentICG.createElement("concept");
 				arcConceptICG.setAttribute("kind", "known");
-				arcConceptICG.setAttribute("id", relationList.get(relationIndex));
+				arcConceptICG.setAttribute("id", relationList.get(RelationIndex++));
 				
 				Element arcChildICG = documentICG.createElement("child");
 				NodeList childList = arcUCG.getElementsByTagName("child");
