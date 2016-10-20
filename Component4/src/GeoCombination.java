@@ -16,9 +16,11 @@ public class GeoCombination {
 	
 	// Be careful not to call this twice
 	public List<List<String>> GetCombinations() {
+		System.out.println("GeoCombination generating combinations...");
 		numArcs = arcGeoRelations.size();
 		List<String> initList = new ArrayList<String>();
 		CombinationGenerator(initList, 0);
+		System.out.println(geoRelationCombinations);
 		return geoRelationCombinations;
 	}
 	

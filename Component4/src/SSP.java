@@ -36,6 +36,7 @@ public class SSP {
 	
 	String allTaggedFile;
 	String arffHeaderFile;
+	boolean printMode = true; // true = print, false = no print
 	
 //	String originalString;	// The original string eg. "the small table close to the small ball" 
 	
@@ -72,6 +73,8 @@ public class SSP {
 		ReadFromStopWordList();
 	}
 	
+	public void SetPrintMode(boolean printModeIn) {printMode = printModeIn;}
+	
 	public String GetTaggedUtterance() { return taggedOutput; }
 	
 	/*
@@ -80,7 +83,7 @@ public class SSP {
 	 * Generates a Weka model classifier from the input
 	 */
 	public void GenerateArffForModel(String fileName, String outputFileName) {
-		System.out.println("Generating the .arff file for the model..");
+		if (printMode) {System.out.println("Generating the .arff file for the model..");}
 		ReadFromWekaHeaderFile();
 		
 		ReadFromPositionWordList();
@@ -224,7 +227,7 @@ public class SSP {
 	 * Anytime a user speaks an utterance, one of these will need to be built
 	 */
 	public void BuildArffModelForPredictions(String utteranceIn) {
-		System.out.println("Building the .arff file for the predictions...");
+		if (printMode) {System.out.println("Building the .arff file for the predictions...");}
 		ReadFromWekaHeaderFile();	// Read in the header
 		
 		ReadFromPositionWordList();
@@ -288,7 +291,8 @@ public class SSP {
 	 * taggedOutput = the:B-O ball:I-O on:B-P...
 	 */
 	public void RunModel(String utteranceIn) throws Exception {
-		System.out.println(utteranceIn);
+		System.out.println("SSP.RunModel(utteranceIn)");
+//		System.out.println(utteranceIn);
 //		System.out.println(prepositionWordList);
 		
 		ReadFromPositionWordList();
@@ -329,8 +333,7 @@ public class SSP {
         	taggedOutput += word + ":" + tagList.get(tagIndex);
         	tagIndex += 1;
         }
-        System.out.println(tagList);
-        System.out.println(taggedOutput);
+        if (printMode) {System.out.println("taggedOutput: " + taggedOutput);}
 
 	}
 	

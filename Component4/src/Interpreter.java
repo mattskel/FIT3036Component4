@@ -14,6 +14,7 @@ public class Interpreter {
 	
 	int imageNumber;
 	String UCGFilename;
+	boolean printMode = true;
 	
 	List<String> nodeLabelList = new ArrayList<String>();
 	List<String> arcLabelList = new ArrayList<String>();
@@ -34,6 +35,8 @@ public class Interpreter {
 	Concept speaker;
 	
 	public Interpreter() {}
+	
+	public void SetPrintMode(boolean printModeIn) {printMode = printModeIn;}
 	
 	public void SetNodeLabels(List<String> nodeLabels) {
 		nodeLabelList = nodeLabels;
@@ -89,6 +92,7 @@ public class Interpreter {
 	// Generates every possible combination for concepts and relations
 	// Generates a score for each possible interpretation and stores it in a list
 	public void GenerateInterpretations() {
+		System.out.println("Generate interpretations...");
 		float currentMax = 0.0f;
 		int conceptIndex = 0;
 		for (List<Concept> concepts : conceptList) {
@@ -109,7 +113,7 @@ public class Interpreter {
 					tmpList.add(relationIndex);
 					highScoreIndex.add(tmpList);
 				} else if (totalScore == currentMax) {
-					System.out.println(conceptIndex);
+//					System.out.println(conceptIndex);
 					List<Integer> tmpList = new ArrayList<Integer>();
 					tmpList.add(conceptIndex);
 					tmpList.add(relationIndex);
@@ -120,7 +124,7 @@ public class Interpreter {
 			conceptIndex += 1;
 		}
 		absoluteMax = currentMax;
-		System.out.println(absoluteMax);
+		System.out.println("##################\nMax score = " + absoluteMax);
 //		System.out.println(highScoreIndex);
 	}
 	
@@ -154,12 +158,14 @@ public class Interpreter {
 	 */
 	public List<Float> GenerateSemanticAssignment(List<Concept> concepts, List<String> relations) {
 		List<Float> tmpScore = new ArrayList<Float>();
+		System.out.println("##################\nSemantic Assignment: ");
 		for (List<String> semantic : semanticsList) {
 //			System.out.println(semantic);
 			Concept object = concepts.get(ConceptIndex(semantic.get(0)));
 			String relation = relations.get(RelationIndex(semantic.get(1)));
 			Concept landmark = concepts.get(ConceptIndex(semantic.get(2)));
 			System.out.println(object.GetID() + " " + relation + " " + landmark.GetID());
+//			System.out.println(object.GetID() + " " + relation + " " + landmark.GetID());
 			SemanticEvaluator se = new SemanticEvaluator();
 			if (relation.equals("on")) {
 //				System.out.println(se.Location_on(object,landmark));
@@ -242,7 +248,12 @@ public class Interpreter {
 			{tmpScore.set(i, (float) Math.round(tmpScore.get(i)*1000) / 1000);} //round out errors
 			
 		}
-		System.out.println(tmpScore);
+		System.out.println("Score = " + tmpScore);
+		float totalScore = 1.0f;
+		for (float score : tmpScore) {
+			totalScore *= score;
+		}
+		System.out.println("Total score = " + totalScore);
 		return tmpScore;
 	}
 	
@@ -273,6 +284,8 @@ public class Interpreter {
 	
 	public void Run(String fileName) throws IOException {
 		
+		System.out.println("##################\nInterpreter.Run(fileName)");
+		
 		UCGFilename = fileName;
 		
 		reader = new UCGReader();
@@ -292,6 +305,8 @@ public class Interpreter {
 		SynonymCombination synonymComb = new SynonymCombination();
 		synonymComb.SetNodeFeatures(reader.GetNodeFeatures());
 		List<List<String>> synCombinationList = synonymComb.GetCombinations();
+		
+//		System.out.println(synCombinationList);
 		
 		// Retrieves all concepts from a given image
 		ConceptReader CR = new ConceptReader();
@@ -326,17 +341,11 @@ public class Interpreter {
 		GeoCombination geoCombination = new GeoCombination();
 		geoCombination.SetGeoRelations(geoRelations);
 		
-		System.out.println(geoRelations);
+//		System.out.println(geoRelations);
 		
 		SetNodeLabels(reader.GetNodeLabels());
 		SetArcLabels(reader.GetArcLabels());
 		SetConcepts(conceptCombination.GetCombinations());
-		System.out.println(conceptCombination.GetNumNodes());
-		for (List<Concept> conceptList : conceptCombination.GetCombinations()) {
-			for (Concept concept : conceptList) {
-				System.out.println(concept.GetID());
-			}
-		}
 		SetRelations(geoCombination.GetCombinations());
 		SetSemantics(reader.GetSemantics());
 		SetSpeaker(concepts);

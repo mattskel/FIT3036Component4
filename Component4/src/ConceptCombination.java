@@ -23,6 +23,8 @@ public class ConceptCombination {
 	// From this list we will generate all possible combinations
 	List<List<Concept>> possibleConceptList;
 	
+	List<List<String>> stringConceptList;	// Where we keep the IDs of the concepts
+	
 	// An output list containing the different combinations of concepts
 	List<List<Concept>> conceptCombinationList = new ArrayList<List<Concept>>();
 	
@@ -46,12 +48,15 @@ public class ConceptCombination {
 	public void GeneratePotentialConcepts() {
 		allFound = true;	// Use this to check that a concept exists matching the synonym
 		possibleConceptList = new ArrayList<List<Concept>>();
+		stringConceptList = new ArrayList<List<String>>();
 		for (String synonym : synonymList) {
 			List<Concept> tmpConceptList = new ArrayList<Concept>();	// Store concepts that match the synonym
+			List<String> tmpStringList = new ArrayList<String>();
 			// Iterate over all concepts in the KB
 			for (Concept concept : conceptList) {
 				if (synonym.equalsIgnoreCase(concept.GetName())) {
 					tmpConceptList.add(concept);
+					tmpStringList.add(concept.GetID());
 				}
 			}
 			// Check at least concept was found for a synonym
@@ -59,6 +64,7 @@ public class ConceptCombination {
 				allFound = false;
 			}
 			possibleConceptList.add(tmpConceptList);
+			stringConceptList.add(tmpStringList);
 		}
 	}
 	
@@ -68,6 +74,7 @@ public class ConceptCombination {
 	}
 	
 	public void GenerateCombinations(List<List<String>> synCombinationList) {
+		System.out.println("ConceptCombination generating combinations...");
 		for (int i = 0; i < synCombinationList.size(); i++) {
 			SetSynonymCombination(synCombinationList.get(i));
 			GeneratePotentialConcepts();

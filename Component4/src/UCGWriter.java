@@ -40,11 +40,15 @@ public class UCGWriter {
 	List<List<String>> arcs = new ArrayList<List<String>>();	// Strings of the preposition/specifier
 	
 	int numNodes;	// The total number of nodes in the graph
+	boolean printMode = true;
 	
 	// Node features list
 	String[] featuresList = {"called", "cg_role","definiteness","determiner"};
 	
 	public UCGWriter() {}
+	
+	public void SetPrintMode(boolean printModeIn) {printMode = printModeIn;}
+	
 	/*
 	 * Sorts a tagged input string into objects and arcs
 	 * Objects and landmarks are both treated as being the same
@@ -277,6 +281,10 @@ public class UCGWriter {
 	 * Writes the XML to a file
 	 */
 	public void BuildXML (int fileNumber) {
+		if (printMode) {
+			System.out.println("##################\nUCG_" + fileNumber);
+			Print();
+		}
 		
 		transformerFactory = TransformerFactory.newInstance();
 		try {
@@ -295,10 +303,36 @@ public class UCGWriter {
 	}
 	
 	public void Run(String inputString) {
+		System.out.println("UCGWriter.Run(inputString)");
 		SortTaggedUtterance(inputString);
 		InitialiseDocument();
 		GenerateNodes();
 		GenerateArcs();
+	}
+	
+	public void Print() {
+		NodeList nList = document.getElementsByTagName("node");
+		for (int i = 0; i < nList.getLength(); i++) {
+			Element node = (Element) nList.item(i);
+			Element concept = (Element) node.getElementsByTagName("concept").item(0);
+			Element feature = (Element) concept.getElementsByTagName("feature").item(0);
+			NodeList arcList = node.getElementsByTagName("arc"); 
+			if (i == 0) {System.out.println(feature.getAttribute("value"));}
+			for (int j = 0; j < arcList.getLength(); j++) {
+				if (i != 0 && j == 0) {System.out.println(feature.getAttribute("value"));}
+				Element arc = (Element) arcList.item(j);
+				Element arcConcept = (Element) arc.getElementsByTagName("concept").item(0);
+				Element arcFeature = (Element) arcConcept.getElementsByTagName("feature").item(0);
+				
+				Element child = (Element) arc.getElementsByTagName("child").item(0);
+				String childString = child.getAttribute("node");
+				String nodeValue = childString.substring(childString.lastIndexOf("Node") + 4);
+				Element childNode = (Element) nList.item(Integer.parseInt(nodeValue));
+				Element childConcept = (Element) childNode.getElementsByTagName("concept").item(0);
+				Element childFeature = (Element) childConcept.getElementsByTagName("feature").item(0);
+				System.out.println(" | " + arcFeature.getAttribute("value") + " -> " + childFeature.getAttribute("value"));
+			}
+		}
 	}
 
 }

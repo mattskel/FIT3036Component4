@@ -23,6 +23,7 @@ public class UCGReader {
 	// For now input file name
 	// Later maybe just input an int and generate the filename from that
 	public void RetriveUCG(String fileName) {
+		System.out.println("UCGReader retrieving " + fileName);
 		try {
 			File file = new File("UCG/" + fileName);
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -169,7 +170,6 @@ public class UCGReader {
 				semanticCalled.add(node.getAttribute("called"));
 				semanticCalled.add(arc.getAttribute("called"));
 				semanticCalled.add(child.getAttribute("called"));
-				System.out.println(semanticCalled);
 			}
 		}
 		return semanticsList;

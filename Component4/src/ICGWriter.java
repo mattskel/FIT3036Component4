@@ -36,6 +36,7 @@ public class ICGWriter {
 	UCGReader reader = new UCGReader();	// Responsible for reading UCGs from the file
 	
 	int numberUCGs;	// The total number of UCGs
+	boolean printMode = true;
 	
 	public ICGWriter() {}
 	
@@ -120,7 +121,8 @@ public class ICGWriter {
 	}
 	
 	public void BuildXML (int fileNumber) {
-		
+		System.out.println("##################\nICG_" + fileNumber);
+		Print();
 		transformerFactory = TransformerFactory.newInstance();
 		try {
 			transformer = transformerFactory.newTransformer();
@@ -134,6 +136,27 @@ public class ICGWriter {
 		} catch (TransformerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public void Print() {
+		NodeList nList = documentICG.getElementsByTagName("node");
+		for (int i = 0; i < nList.getLength(); i++) {
+			Element node = (Element) nList.item(i);
+			Element concept = (Element) node.getElementsByTagName("concept").item(0);
+			NodeList arcList = node.getElementsByTagName("arc"); 
+			if (i == 0) {System.out.println(concept.getAttribute("id"));}
+			for (int j = 0; j < arcList.getLength(); j++) {
+				if (i != 0 && j == 0) {System.out.println(concept.getAttribute("id"));}
+				Element arc = (Element) arcList.item(j);
+				Element arcConcept = (Element) arc.getElementsByTagName("concept").item(0);
+				Element child = (Element) arc.getElementsByTagName("child").item(0);
+				String childString = child.getAttribute("node");
+				String nodeValue = childString.substring(childString.lastIndexOf("Node") + 4);
+				Element childNode = (Element) nList.item(Integer.parseInt(nodeValue));
+				Element childConcept = (Element) childNode.getElementsByTagName("concept").item(0);
+				System.out.println(" | " + arcConcept.getAttribute("id") + " -> " + childConcept.getAttribute("id"));
+			}
 		}
 	}
 	

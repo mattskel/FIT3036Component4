@@ -38,13 +38,16 @@ public class SynonymCombination {
 	}
 	
 	public List<List<String>> GetCombinations() {
+		System.out.println("SynonymCombination generating combinations...");
 		numNodes = nodeSynonymList.size();
 		List<String> initList = new ArrayList<String>();
 		CombinationGenerator(initList, 0);
+//		System.out.print(combinationList);
 		return combinationList;
 	}
 	
 	public void CombinationGenerator (List<String> currentCombination, int index) {
+		
 		if (index >= numNodes) {
 			combinationList.add(currentCombination);
 		} else {
